@@ -1,0 +1,6 @@
+# Big binary payloads — move these to the new machine by USB or Drive,
+# not through git.
+payload/*.tar.gz
+
+# Run logs
+setup-*.log

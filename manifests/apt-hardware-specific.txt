@@ -1,0 +1,26 @@
+# Packages that exist on the SOURCE machine (Apple MacBookPro12,1 — Intel
+# Broadwell i5-5257U, Iris 6100 graphics) only because of that hardware.
+#
+# TARGET machine is a desktop: Gigabyte H370N-WIFI / Intel i5-8400 /
+# AMD Radeon RX 5700 XT. None of the below applies to it, so setup.sh skips
+# them by default. --hardware-too installs them anyway.
+
+# Apple MacBook fan control, from the mactel-support PPA
+macfanctld
+
+# System76 firmware/hardware DKMS modules — System76 machines only
+system76-acpi-dkms
+system76-dkms
+system76-io-dkms
+
+# Laptop power management — pointless on a desktop
+tlp
+tlp-rdw
+
+# NVIDIA driver: WRONG for an RX 5700 XT. That card uses the open-source
+# amdgpu kernel driver + Mesa, installed by the "gpu" phase instead.
+# Install Pop!_OS from the Intel/AMD ISO, not the NVIDIA one.
+nvidia-driver-570-open
+
+# AMD Ryzen power-tuning tool — the target CPU is an Intel i5-8400
+amd-ppt-bin

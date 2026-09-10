@@ -1,0 +1,10 @@
+captured: 2026-09-10T19:08:58+10:00
+host:     pop-os
+machine:  Apple Inc. MacBookPro12,1
+os:       Pop!_OS 24.04 LTS
+kernel:   7.1.5-76070105-generic
+desktop:  COSMIC
+locale:   en_AU.UTF-8
+keymap:   au
+timezone: Australia/Sydney
+groups:   martinstevenson adm sudo input lpadmin nordvpn

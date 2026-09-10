@@ -1,0 +1,10 @@
+android-studio	1
+claudeai-desktop	0
+cups	0
+google-docs	0
+nordpass	0
+nordvpn	0
+onlyoffice-desktopeditors	0
+rstudio	1
+whatsapp-linux-app	0
+wps-office	0

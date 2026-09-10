@@ -1,0 +1,19 @@
+# Leftovers from an older Ubuntu base (jammy -> noble upgrade) that are still
+# flagged "manually installed" here but no longer exist in noble's archive.
+# setup.sh drops them so the install doesn't abort; nothing needs them.
+
+libdns-export1110
+libestr0
+libfastjson4
+libicu70
+libisc-export1105
+libmpdec3
+libnetplan0
+libprocps8
+libpython3.10-minimal
+libpython3.10-stdlib
+libunistring2
+python3.10
+python3.10-minimal
+init
+isc-dhcp-common

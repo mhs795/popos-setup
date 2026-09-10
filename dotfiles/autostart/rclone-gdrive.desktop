@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Mount Google Drive
+Exec=/home/martinstevenson/.local/bin/mount-gdrive.sh
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true

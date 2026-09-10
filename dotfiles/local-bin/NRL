@@ -1,0 +1,2 @@
+#!/bin/bash
+cd /home/martinstevenson/nrl_tips && python3 1_NRL_TIPS_gui.py

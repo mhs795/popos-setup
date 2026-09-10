@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Fix Text Scaling
+Exec=/home/martinstevenson/.local/bin/fix-text-scaling.sh
+Comment=Restores correct text-scaling-factor for the current desktop session
+X-GNOME-Autostart-enabled=true
+NoDisplay=true
