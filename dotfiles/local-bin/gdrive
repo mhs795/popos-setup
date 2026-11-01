@@ -1,0 +1,123 @@
+#!/usr/bin/env python3
+"""Copy files to Google Drive through GNOME Online Accounts (gio / gvfs). Replaces the old rclone setup.
+
+Folders are written the way the Files app shows them, starting at the Drive root:
+    "My Drive/WORK/information library/Weekly research"
+
+Usage:
+    gdrive put FILE... FOLDER                     upload, replacing any file of the same name (no duplicates)
+    gdrive archive FOLDER ARCHIVE PATTERN [--keep NAME]
+                                                  move files in FOLDER matching PATTERN (e.g. "Gas_Daily_*.html")
+                                                  into ARCHIVE, except NAME; never deletes
+    gdrive check FOLDER                           exit 0 if FOLDER exists (prints its gio address)
+
+The Google account is the one added in Online Accounts with Files turned on. If there are several,
+set GDRIVE_ACCOUNT=you@gmail.com. Exit status is non-zero on any failure.
+"""
+
+import configparser, fnmatch, os, subprocess, sys
+from pathlib import Path
+
+GOA_CONF = Path.home() / ".config" / "goa-1.0" / "accounts.conf"
+
+
+def die(msg):
+    sys.exit(f"gdrive: {msg}")
+
+
+def gio(*args):
+    r = subprocess.run(["gio", *args], capture_output=True, text=True)
+    if r.returncode:
+        raise RuntimeError(r.stderr.strip() or f"gio {args[0]} failed")
+    return r.stdout
+
+
+def account():
+    if os.environ.get("GDRIVE_ACCOUNT"):
+        return os.environ["GDRIVE_ACCOUNT"]
+    cfg = configparser.ConfigParser(interpolation=None)
+    cfg.read(GOA_CONF)
+    found = [s["Identity"] for s in cfg.values()
+             if s.get("Provider") == "google" and s.get("FilesEnabled", "true") == "true" and "Identity" in s]
+    if not found:
+        die("no Google account with Files turned on in Online Accounts (run gnome-online-accounts-gtk)")
+    if len(found) > 1:
+        die(f"several Google accounts ({', '.join(found)}): set GDRIVE_ACCOUNT to pick one")
+    return found[0]
+
+
+def root():
+    uri = f"google-drive://{account()}/"
+    r = subprocess.run(["gio", "mount", uri], capture_output=True, text=True)  # no-op if already mounted
+    if r.returncode and "already mounted" not in r.stderr.lower():
+        die(f"cannot mount {uri}: {r.stderr.strip()}")
+    return uri.rstrip("/")
+
+
+def children(uri):
+    """[(id, display name, is_dir)] for the entries in a Drive folder."""
+    out = []
+    for line in gio("list", "-a", "standard::display-name", uri).splitlines():
+        parts = line.split("\t")
+        if len(parts) < 4:
+            continue
+        name = parts[3].split("standard::display-name=", 1)[-1]
+        out.append((parts[0], name, parts[2] == "(directory)"))
+    return out
+
+
+def folder(path):
+    """gio address of a Drive folder given as 'My Drive/a/b'. gvfs addresses are chains of IDs, not names."""
+    uri = root()
+    for part in [p for p in path.strip("/").split("/") if p]:
+        hits = [i for i, n, d in children(uri) if d and n == part]
+        if not hits:
+            die(f"folder not found: '{part}' in {path}")
+        if len(hits) > 1:
+            die(f"{len(hits)} folders called '{part}' in {path}; rename one")
+        uri = f"{uri}/{hits[0]}"
+    return uri
+
+
+def put(files, dest):
+    uri = folder(dest)
+    for f in map(Path, files):
+        if not f.is_file():
+            die(f"no such file: {f}")
+        gio("copy", str(f), f"{uri}/{f.name}")  # gvfs maps the name to the existing file, so this replaces it
+        sizes = {n: i for i, n, d in children(uri) if not d}
+        if f.name not in sizes:
+            die(f"upload of {f.name} did not show up in {dest}")
+        got = gio("info", "-a", "standard::size", f"{uri}/{sizes[f.name]}")
+        size = next((l.split(":")[-1].strip() for l in got.splitlines() if "standard::size" in l), "")
+        if size != str(f.stat().st_size):
+            die(f"{f.name} on Drive is {size} bytes, expected {f.stat().st_size}")
+        print(f"uploaded {f.name} -> {dest}")
+
+
+def archive(src, dst, pattern, keep):
+    s, d = folder(src), folder(dst)
+    moved = 0
+    for i, n, is_dir in children(s):
+        if not is_dir and fnmatch.fnmatch(n, pattern) and n != keep:
+            gio("move", f"{s}/{i}", f"{d}/")
+            moved += 1
+    print(f"moved {moved} file(s) matching {pattern} to {dst}")
+
+
+def main(a):
+    try:
+        if len(a) >= 3 and a[0] == "put":
+            put(a[1:-1], a[-1])
+        elif len(a) in (4, 6) and a[0] == "archive" and (len(a) == 4 or a[4] == "--keep"):
+            archive(a[1], a[2], a[3], a[5] if len(a) == 6 else None)
+        elif len(a) == 2 and a[0] == "check":
+            print(folder(a[1]))
+        else:
+            sys.exit(__doc__)
+    except RuntimeError as e:
+        die(str(e))
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])

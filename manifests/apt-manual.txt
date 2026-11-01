@@ -182,7 +182,6 @@ qml-module-qtwebengine
 qt5-style-kvantum
 qt5-style-kvantum-themes
 r-base
-rclone
 rsyslog
 rust-all
 sddm

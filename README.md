@@ -118,10 +118,8 @@ Rewritten:
 Credentials and data are deliberately not in this repo:
 
 1. `gh auth login`, then `./setup.sh clone`
-2. `rclone config` — re-authorise Drive, **name the remote `drive`** (that is
-   what `mount-gdrive.sh` expects). While you are there, set up your own Google
-   API `client_id`; the shared rclone one is being retired during 2026 — steps
-   are in the comment block at the bottom of `~/.local/bin/mount-gdrive.sh`.
+2. Add your Google account in Online Accounts (`gnome-online-accounts-gtk`) with
+   Files on. The report scripts upload to Drive through it with `~/.local/bin/gdrive`.
 3. `nordvpn login`
 4. Sign in to Brave/Chrome, Spotify, Discord, VS Code, Claude, Steam
 5. Copy the data that lives in no git repo:

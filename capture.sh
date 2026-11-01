@@ -70,7 +70,7 @@ for f in .bashrc .profile .gitconfig .condarc .xprofile .gtkrc-2.0 .selected_edi
 done
 cp -f "$HOME"/.config/autostart/*.desktop "$D/autostart/" 2>/dev/null
 # hand-written scripts in ~/.local/bin (skip symlinks into repos and pip shims)
-for f in fix-text-scaling.sh mount-gdrive.sh NRL; do
+for f in fix-text-scaling.sh gdrive NRL; do
     [ -f "$HOME/.local/bin/$f" ] && [ ! -L "$HOME/.local/bin/$f" ] && cp -f "$HOME/.local/bin/$f" "$D/local-bin/$f"
 done
 say "dotfiles: $(ls "$D" | wc -l) files + $(ls "$D/autostart" 2>/dev/null | wc -l) autostart entries"

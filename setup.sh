@@ -540,11 +540,8 @@ Still to do by hand — these need credentials or data that is deliberately
 NOT in this kit:
 
   1. gh auth login                  GitHub sign-in (then: ./setup.sh clone)
-  2. rclone config                  re-authorise the Google Drive remote
-                                    (name it "drive" — mount-gdrive.sh expects that)
-     ...and set up your OWN Google API client_id while you are there: the
-     shared rclone client is being retired during 2026. Steps are in the
-     comment block at the bottom of ~/.local/bin/mount-gdrive.sh
+  2. gnome-online-accounts-gtk      add the Google account (Files on); the report
+                                    scripts upload to Drive with ~/.local/bin/gdrive
   3. nordvpn login                  VPN account
   4. Sign in to: Brave/Chrome, Spotify, Discord, VS Code, Claude, Steam
   5. Copy across the data that is not in any git repo:
