@@ -8,6 +8,7 @@ breeze-gtk-theme
 brightnessctl
 build-essential
 cinnamon-desktop-environment
+clang
 claude-desktop
 cmake
 code
@@ -64,6 +65,7 @@ ibus-table-quick-classic
 ibus-table-wubi
 init
 isc-dhcp-common
+just
 kpartx
 kpartx-boot
 kwin-common
@@ -142,10 +144,12 @@ libtool
 libudunits2-dev
 libunistring2
 libxml2-utils
+lldb
 logrotate
 macfanctld
 materia-kde
 meson
+mold
 mythes-ar
 mythes-de
 mythes-de-ch

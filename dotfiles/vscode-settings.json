@@ -1,0 +1,26 @@
+{
+    "workbench.colorTheme": "Dark+",
+    "security.workspace.trust.untrustedFiles": "open",
+    "claudeCode.preferredLocation": "panel",
+    "claudeCode.hideOnboarding": true,
+    "claudeCode.useTerminal": true,
+    "workbench.statusBar.visible": false,
+    "window.density.layout": "compact",
+    "rust-analyzer.cargo.sysrootSrc": "/home/martinstevenson/.local/share/rust-src/1.95.0/library",
+    "rust-analyzer.check.command": "clippy",
+    "rust-analyzer.inlayHints.chainingHints.enable": false,
+    "rust-analyzer.lens.enable": true,
+    "[rust]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "rust-lang.rust-analyzer"
+    },
+    "[toml]": {
+        "editor.defaultFormatter": "tamasfe.even-better-toml"
+    },
+    "files.watcherExclude": {
+        "**/target/**": true
+    },
+    "search.exclude": {
+        "**/target": true
+    }
+}

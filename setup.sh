@@ -386,6 +386,25 @@ if want vscode; then
             if [ "$DRY" = 1 ]; then printf '    \033[90m[dry-run]\033[0m code --install-extension %s\n' "$ext"; continue; fi
             code --install-extension "$ext" >>"$LOG" 2>&1 && c_ok "$ext" || c_err "vscode: $ext"
         done < <(list "$M/vscode-extensions.txt")
+
+        # rust-analyzer needs the std library source matching the apt rustc;
+        # the apt rust-src package lags far behind, so fetch it from rust-lang.org.
+        if have rustc; then
+            rv="$(rustc --version | awk '{print $2}')"
+            rs="$HOME/.local/share/rust-src/$rv"
+            if [ -d "$rs/library" ]; then c_skip "rust-src $rv"
+            elif [ "$DRY" = 1 ]; then printf '    \033[90m[dry-run]\033[0m fetch rust-src %s\n' "$rv"
+            else
+                t="$(mktemp -d)"
+                if curl -sSfL "https://static.rust-lang.org/dist/rust-src-$rv.tar.xz" -o "$t/s.tar.xz" \
+                   && echo "$(curl -sSfL "https://static.rust-lang.org/dist/rust-src-$rv.tar.xz.sha256" | awk '{print $1}')  $t/s.tar.xz" | sha256sum -c --quiet \
+                   && tar xf "$t/s.tar.xz" -C "$t" && mkdir -p "$rs" \
+                   && cp -r "$t/rust-src-$rv/rust-src/lib/rustlib/src/rust/library" "$rs/"; then
+                    c_ok "rust-src $rv (set rust-analyzer.cargo.sysrootSrc if the version changed)"
+                else c_err "rust-src $rv"; fi
+                rm -rf "$t"
+            fi
+        fi
     fi
 fi
 
@@ -423,6 +442,7 @@ if want dotfiles; then
     fi
     put gtkrc-2.0       .gtkrc-2.0
     put selected_editor .selected_editor
+    put vscode-settings.json .config/Code/User/settings.json
 
     mkdir -p "$HOME/.local/bin" "$HOME/.config/autostart"
     for f in "$D"/local-bin/*; do
