@@ -560,8 +560,8 @@ Still to do by hand — these need credentials or data that is deliberately
 NOT in this kit:
 
   1. gh auth login                  GitHub sign-in (then: ./setup.sh clone)
-  2. gnome-online-accounts-gtk      add the Google account (Files on); the report
-                                    scripts upload to Drive with ~/.local/bin/gdrive
+  2. gnome-online-accounts-gtk      add the Google account (Files on); at login
+                                    mount-gdrive.sh links ~/GoogleDrive to My Drive
   3. nordvpn login                  VPN account
   4. Sign in to: Brave/Chrome, Spotify, Discord, VS Code, Claude, Steam
   5. Copy across the data that is not in any git repo:

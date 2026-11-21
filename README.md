@@ -119,7 +119,8 @@ Credentials and data are deliberately not in this repo:
 
 1. `gh auth login`, then `./setup.sh clone`
 2. Add your Google account in Online Accounts (`gnome-online-accounts-gtk`) with
-   Files on. The report scripts upload to Drive through it with `~/.local/bin/gdrive`.
+   Files on. At login, `mount-gdrive.sh` mounts it and links `~/GoogleDrive` to My Drive (remounting if
+   it drops); the report scripts read and write Drive there, with `~/.local/bin/gdrive` as a fallback.
 3. `nordvpn login`
 4. Sign in to Brave/Chrome, Spotify, Discord, VS Code, Claude, Steam
 5. Copy the data that lives in no git repo:
