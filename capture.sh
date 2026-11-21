@@ -13,7 +13,7 @@
 set -uo pipefail
 KIT="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
 M="$KIT/manifests"; D="$KIT/dotfiles"; P="$KIT/payload"
-mkdir -p "$M" "$D/autostart" "$D/local-bin" "$P"
+mkdir -p "$M" "$D/autostart" "$D/applications" "$D/local-bin" "$P"
 
 say() { printf '  %s\n' "$*"; }
 echo "Capturing system state from $(hostname) ..."
@@ -69,8 +69,9 @@ for f in .bashrc .profile .gitconfig .condarc .xprofile .gtkrc-2.0 .selected_edi
     [ -f "$HOME/$f" ] && cp -f "$HOME/$f" "$D/${f#.}"
 done
 cp -f "$HOME"/.config/autostart/*.desktop "$D/autostart/" 2>/dev/null
+cp -f "$HOME"/.local/share/applications/open-html.desktop "$D/applications/" 2>/dev/null
 # hand-written scripts in ~/.local/bin (skip symlinks into repos and pip shims)
-for f in fix-text-scaling.sh gdrive mount-gdrive.sh NRL; do
+for f in fix-text-scaling.sh gdrive mount-gdrive.sh open-html NRL; do
     [ -f "$HOME/.local/bin/$f" ] && [ ! -L "$HOME/.local/bin/$f" ] && cp -f "$HOME/.local/bin/$f" "$D/local-bin/$f"
 done
 say "dotfiles: $(ls "$D" | wc -l) files + $(ls "$D/autostart" 2>/dev/null | wc -l) autostart entries"

@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Open HTML files in the browser, including ones on the GNOME (gvfs) Google Drive mount.
+# Files there are named by Drive ID with no .html ending, so Chromium browsers (Brave) show them as code.
+# For those, copy the file to a temp folder under its real name and open the copy.
+# Set as the default app for text/html by ~/.local/share/applications/open-html.desktop.
+#
+#   OPEN_HTML_BROWSER   desktop entry of the browser to use (default: brave-browser.desktop)
+set -u
+BROWSER="${OPEN_HTML_BROWSER:-brave-browser.desktop}"
+TMP="${XDG_RUNTIME_DIR:-/tmp}/open-html"
+out=()
+for a in "$@"; do
+  p="$a"
+  case "$a" in
+    file://*) p="$(python3 -c 'import sys,urllib.parse as u;print(u.unquote(u.urlparse(sys.argv[1]).path))' "$a")" ;;
+    google-drive://*) p="" ;;
+  esac
+  real="$( [ -n "$p" ] && realpath -q -- "$p" 2>/dev/null || true)"
+  if [[ "$a" == google-drive://* || ( "$real" == */gvfs/google-drive:* && ! "${real,,}" =~ \.x?html?$ ) ]]; then
+    src="${real:-$a}"
+    name="$(gio info -a standard::display-name -- "$src" 2>/dev/null | sed -n 's/^  standard::display-name: //p')"
+    name="${name:-$(basename -- "$src")}"
+    [[ "${name,,}" =~ \.x?html?$ ]] || name="$name.html"
+    d="$TMP/$(basename -- "$src")"; mkdir -p "$d"
+    if gio copy -- "$src" "$d/$name" 2>/dev/null || cp -- "$src" "$d/$name" 2>/dev/null; then out+=("$d/$name"); continue; fi
+  fi
+  out+=("$a")
+done
+for dir in "$HOME/.local/share/applications" /usr/local/share/applications /usr/share/applications \
+           /var/lib/flatpak/exports/share/applications; do
+  [ -f "$dir/$BROWSER" ] && exec gio launch "$dir/$BROWSER" "${out[@]}"
+done
+echo "open-html: browser entry $BROWSER not found" >&2; exit 1

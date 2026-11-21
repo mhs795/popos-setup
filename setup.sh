@@ -457,6 +457,19 @@ if want dotfiles; then
         if [ "$DRY" = 1 ]; then printf '    \033[90m[dry-run]\033[0m autostart/%s\n' "$b"; continue; fi
         cp -f "$f" "$HOME/.config/autostart/$b" && c_ok "autostart/$b"
     done
+    # app entries (open-html: Brave for HTML files, incl. Drive files with no .html name)
+    mkdir -p "$HOME/.local/share/applications"
+    for f in "$D"/applications/*.desktop; do
+        [ -f "$f" ] || continue
+        b="$(basename "$f")"
+        if [ "$DRY" = 1 ]; then printf '    \033[90m[dry-run]\033[0m applications/%s\n' "$b"; continue; fi
+        cp -f "$f" "$HOME/.local/share/applications/$b" && c_ok "applications/$b"
+    done
+    if [ "$DRY" != 1 ] && [ -f "$HOME/.local/share/applications/open-html.desktop" ]; then
+        xdg-mime default open-html.desktop text/html application/xhtml+xml
+        C="$HOME/.config/cosmic-mimeapps.list"   # COSMIC reads this before mimeapps.list
+        [ -f "$C" ] && sed -i -E 's#^(text/html|application/xhtml\+xml)=[^;]*$#\1=open-html.desktop#' "$C"
+    fi
 fi
 
 

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Brave (HTML files)
+Comment=Opens HTML files in Brave, including Google Drive files that have no .html name
+Exec=/home/martinstevenson/.local/bin/open-html %U
+Icon=brave-browser
+MimeType=text/html;application/xhtml+xml;
+NoDisplay=true
+Terminal=false
