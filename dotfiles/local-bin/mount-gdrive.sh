@@ -4,13 +4,13 @@
 #
 #   GDRIVE_ACCOUNT   Google account to mount (default: the first Google account in Online Accounts)
 #   GDRIVE_LINK      where the link goes (default: ~/GoogleDrive)
-#   GDRIVE_CHECK     seconds between checks (default: 60)
+#   GDRIVE_CHECK     seconds between checks (default: 10)
 #
 # Note: on this mount, `ls` shows Drive file IDs; open files by name, and list names with
 #   gio list -a standard::display-name ~/GoogleDrive/<folder>
 set -u
 LINK="${GDRIVE_LINK:-$HOME/GoogleDrive}"
-CHECK="${GDRIVE_CHECK:-60}"
+CHECK="${GDRIVE_CHECK:-10}"
 LOG="$HOME/.cache/gdrive-mount.log"
 mkdir -p "$(dirname "$LOG")"
 log() { echo "$(date '+%F %T') $*" >> "$LOG"; }
