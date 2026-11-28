@@ -150,3 +150,5 @@ alias DARIAR-POLICY='/home/martinstevenson/models/daria_r/run_scenarios_seq.sh'
 
 # SGM — Safeguard Mechanism agent-based model dashboard (SAM)
 alias SGM='/home/martinstevenson/models/sgm_abm/SGM'
+# HEW — Household Energy Wallet model dashboard
+alias HEW='/home/martinstevenson/models/household_energy_wallet/HEW'
